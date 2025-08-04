@@ -1,0 +1,6 @@
+# Advanced features requirements
+# Note: This requires additional system dependencies for compilation
+-r requirements.txt
+pyportfolioopt
+scikit-learn
+scipy 
