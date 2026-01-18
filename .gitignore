@@ -1,7 +1,35 @@
+# ===================
+# Python
+# ===================
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
 *$py.class
+
+# SQLite database
+*.db
+*.sqlite3
+
+# ===================
+# Node.js / Next.js
+# ===================
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+
+# Production build
+frontend/build/
+
+# ===================
+# General
+# ===================
 
 # C extensions
 *.so

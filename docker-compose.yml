@@ -1,58 +1,40 @@
 version: '3.8'
 
 services:
-  db:
-    image: postgres:14
-    container_name: asset_advisor_db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: asset_advisor
-    ports:
-      - "5432:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    networks:
-      - asset-network
-
-  api:
+  backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
-    container_name: asset_advisor_api
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: postgresql+psycopg2://postgres:postgres@db:5432/asset_advisor
     ports:
       - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./smartasset.db
+      - SECRET_KEY=dev-secret-key-change-in-production
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - LLM_MOCK_MODE=true
+      - DEBUG=true
     volumes:
-      - .:/usr/src/app
-    networks:
-      - asset-network
-    command: >
-      uvicorn app.main:app
-      --reload
-      --host 0.0.0.0
-      --port 8000
+      - ./backend:/app
+      - backend_data:/app/data
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
-  # Optional: Airflow for orchestration
-  # airflow:
-  #   image: apache/airflow:2.5.1
-  #   container_name: asset_advisor_airflow
-  #   environment:
-  #     AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@db:5432/asset_advisor
-  #     AIRFLOW__CORE__EXECUTOR: LocalExecutor
-  #   volumes:
-  #     - ./airflow/dags:/opt/airflow/dags
-  #   ports:
-  #     - "8080:8080"
-  #   networks:
-  #     - asset-network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    depends_on:
+      - backend
 
 volumes:
-  db_data:
-
-networks:
-  asset-network:
-    driver: bridge
+  backend_data:
