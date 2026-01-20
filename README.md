@@ -1,6 +1,6 @@
 # SmartAsset
 
-AI-powered financial advisor chatbot for Canadians. Get personalized guidance on budgeting, taxes, TFSA, RRSP, and more.
+AI-powered financial advisor chatbot for users under Canadian tax system. Get personalized guidance on budgeting, taxes, TFSA, RRSP, and more.
 
 ## Features
 
