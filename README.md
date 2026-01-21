@@ -174,4 +174,4 @@ If Ollama is not available, the app falls back to mock responses for development
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the Apache-2.0
